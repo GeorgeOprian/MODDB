@@ -1,0 +1,21 @@
+Fragmentare Orizontala: 
+	- OLTP_JUDET:
+		- OLTP_JUDET1 (nume=Bucuresti)
+		- OLTP_JUDET2 (nume<>Bucuresti)
+	- OLTP_LOCALITATE
+		- OLTP_LOCALITATE1 (cu proprietate ca OLTP_LOCALITATE1 se afla in judetul OLTP_JUDET1)
+		- OLTP_LOCALITATE2 (cu proprietate ca OLTP_LOCALITATE2 se afla in judetul OLTP_JUDET2)
+	- OLTP_ADRESA
+		- OLTP_ADRESA1 (cu proprietatea ca OLTP_ADRESA1 se afla in OLTP_LOCALITATE1)
+		- OLTP_ADRESA2 (cu proprietatea ca OLTP_ADRESA2 se afla in OLTP_LOCALITATE2)
+	- OLTP_APARTAMENT
+		- OLTP_APARTAMENT1 (cu proprietatea ca OLTP_APARTAMENT1 se afla la OLTP_ADRESA1)
+		- OLTP_APARTAMENT2 (cu proprietatea ca OLTP_APARTAMENT2 se afla la OLTP_ADRESA2)
+	- OLTP_CONTRACT
+		- OLTP_CONTRACT1 (cu proprietatea ca OLTP_CONTRACT1 este incheiat pentru OLTP_APARTAMENT1)
+		- OLTP_CONTRACT2 (cu proprietatea ca OLTP_CONTRACT2 este incheiat pentru OLTP_APARTAMENT2)
+	- OLTP_PLATA
+		- OLTP_PLAT1 (cu proprietatea ca OLTP_PLATA1 este efectuata pentru OLTP_CONTRACT1)
+		- OLTP_PLAT2 (cu proprietatea ca OLTP_PLATA1 este efectuata pentru OLTP_CONTRACT2)
+		
+	

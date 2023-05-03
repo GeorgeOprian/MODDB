@@ -1,0 +1,27 @@
+input
+	R = OLTP_JUDET
+	Pr = {nume=Bucuresti, nume<>Bucuresti} // Pr = {p1, p2}
+declare
+	F: {} //multime de predicate simple completa si minimala
+output
+	Pr' <- {nume=Bucuresti} // multime de predicate simple completă și mini
+	Pr <- Pr \ {nume=Bucuresti}
+	F = {f1} // f1 = fragmenul lui p1
+`	repeta
+		//cautam un predicat pj (unde 1<j<=2) din Pr care partitioneaza fragmente fk din Pr' conform regulii 1
+		//deci j <- 2 
+		k <- 2
+		Pr' <- Pr' <- {nume=Bucuresti, nume<>Bucuresti} // 
+		Pr <- {}
+		F <- {f1, f2}
+		
+		if exista p2 apartine lui Pr' nerelevant -> fals
+	pana cand Pr' completa // dupa primul pas Pr' completa => algoritmul se termina 
+	
+	//deci multimea de predicate simpla si completa este Pr' = {nume=Bucuresti, nume<>Bucuresti}, Pr = {}, F = {f1, f2}
+	// unde f1 = multimea inregistrarilor cu nume=Bucuresti, f2 = multimea inregistrarilor cu nume<>Bucuresti 
+	// deci vom avea doua fragmente orizontale ale relatiei OLTP_JUDET
+	
+
+	
+	
