@@ -1,0 +1,20 @@
+DROP TABLE AGENT_IMOBILIAR_NATIONAL CASCADE CONSTRAINTS;
+
+create table AGENT_IMOBILIAR_NATIONAL
+(
+  id_agent       NUMBER(6) not null,
+  salariu        NUMBER(8,2),
+  comision       NUMBER(2,2)
+)
+;
+
+alter table AGENT_IMOBILIAR_NATIONAL
+  add constraint AGENT_IMOBILIAR_NATIONAL_ID_AGENT_IMOBILIAR_NATIONAL_PK primary key (ID_AGENT);
+
+alter table AGENT_IMOBILIAR_NATIONAL
+  add constraint AGENT_IMOBILIAR_NATIONAL_SALARIU_MIN
+  check (SALARIU > 0);
+
+alter table AGENT_IMOBILIAR_NATIONAL
+  add constraint AGENT_IMOBILIAR_NATIONAL_COMISION_MIN
+  check (comision >= 0);

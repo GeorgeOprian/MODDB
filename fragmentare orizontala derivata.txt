@@ -1,21 +1,21 @@
 Fragmentare Orizontala: 
-	- OLTP_JUDET:
-		- OLTP_JUDET1 (nume=Bucuresti)
-		- OLTP_JUDET2 (nume<>Bucuresti)
-	- OLTP_LOCALITATE
-		- OLTP_LOCALITATE1 (cu proprietate ca OLTP_LOCALITATE1 se afla in judetul OLTP_JUDET1)
-		- OLTP_LOCALITATE2 (cu proprietate ca OLTP_LOCALITATE2 se afla in judetul OLTP_JUDET2)
-	- OLTP_ADRESA
-		- OLTP_ADRESA1 (cu proprietatea ca OLTP_ADRESA1 se afla in OLTP_LOCALITATE1)
-		- OLTP_ADRESA2 (cu proprietatea ca OLTP_ADRESA2 se afla in OLTP_LOCALITATE2)
-	- OLTP_APARTAMENT
-		- OLTP_APARTAMENT1 (cu proprietatea ca OLTP_APARTAMENT1 se afla la OLTP_ADRESA1)
-		- OLTP_APARTAMENT2 (cu proprietatea ca OLTP_APARTAMENT2 se afla la OLTP_ADRESA2)
-	- OLTP_CONTRACT
-		- OLTP_CONTRACT1 (cu proprietatea ca OLTP_CONTRACT1 este incheiat pentru OLTP_APARTAMENT1)
-		- OLTP_CONTRACT2 (cu proprietatea ca OLTP_CONTRACT2 este incheiat pentru OLTP_APARTAMENT2)
-	- OLTP_PLATA
-		- OLTP_PLAT1 (cu proprietatea ca OLTP_PLATA1 este efectuata pentru OLTP_CONTRACT1)
-		- OLTP_PLAT2 (cu proprietatea ca OLTP_PLATA1 este efectuata pentru OLTP_CONTRACT2)
+	- JUDET:
+		- JUDET_BUCURESTI (nume=Bucuresti)
+		- JUDET_PROVINCIE (nume<>Bucuresti)
+	- LOCALITATE
+		- LOCALITATE_BUCURESTI (cu proprietate ca LOCALITATE_BUCURESTI se afla in judetul JUDET_BUCURESTI)
+		- LOCALITATE_PROVINCIE (cu proprietate ca LOCALITATE_PROVINCIE se afla in judetul JUDET_PROVINCIE)
+	- ADRESA
+		- ADRESA_BUCURESTI (cu proprietatea ca ADRESA_BUCURESTI se afla in LOCALITATE_BUCURESTI)
+		- ADRESA_PROVINCIE (cu proprietatea ca ADRESA_PROVINCIE se afla in LOCALITATE_PROVINCIE)
+	- APARTAMENT
+		- APARTAMENT_BUCURESTI (cu proprietatea ca APARTAMENT_BUCURESTI se afla la ADRESA_BUCURESTI)
+		- APARTAMENT_PROVINCIE (cu proprietatea ca APARTAMENT_PROVINCIE se afla la ADRESA_PROVINCIE)
+	- CONTRACT
+		- CONTRACT_BUCURESTI (cu proprietatea ca CONTRACT_BUCURESTI este incheiat pentru APARTAMENT_BUCURESTI)
+		- CONTRACT_PROVINCIE (cu proprietatea ca CONTRACT_PROVINCIE este incheiat pentru APARTAMENT_PROVINCIE)
+	- PLATA
+		- PLAT_BUCURESTI (cu proprietatea ca PLATA_BUCURESTI este efectuata pentru CONTRACT_BUCURESTI)
+		- PLAT_PROVINCIE (cu proprietatea ca PLATA_BUCURESTI este efectuata pentru CONTRACT_PROVINCIE)
 		
 	
