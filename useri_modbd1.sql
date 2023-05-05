@@ -8,6 +8,8 @@ grant resource to modbd_centralizat;
 
 grant create session to modbd_national;
 grant resource to modbd_national;
+grant CREATE PUBLIC DATABASE LINK to modbd_national;
+grant DROP PUBLIC DATABASE LINK to modbd_national;
 
 grant create session to modbd_bucuresti;
 grant resource to modbd_bucuresti;
