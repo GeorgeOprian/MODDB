@@ -7,6 +7,16 @@ USING '(DESCRIPTION=
             (ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))
             (CONNECT_DATA=(SERVICE_NAME=modbd1))
         )';
+
+
+-- DIN PROVINCIE IN CENTRALIZAT
+CREATE PUBLIC DATABASE LINK BD_CENTRALIZAT
+  CONNECT TO MODBD_CENTRALIZAT
+  IDENTIFIED BY parolamodbd
+USING '(DESCRIPTION=
+            (ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))
+            (CONNECT_DATA=(SERVICE_NAME=modbd1))
+        )';
         
         
 select * from agent_imobiliar_bucuresti@bd_bucuresti;

@@ -1,3 +1,33 @@
+--delete from oltp_plata_chirie;
+--delete from oltp_contract;
+--delete from oltp_chirias;
+--delete from oltp_agent_imobiliar;
+--delete from oltp_apartament;
+--delete from oltp_adresa;
+--delete from oltp_localitate;
+--delete from oltp_judet;
+--
+--commit;
+
+
+DROP SEQUENCE OLTP_ADRESA_SEQ;
+DROP SEQUENCE OLTP_LOCALITATE_SEQ;
+DROP SEQUENCE OLTP_JUDET_SEQ;
+DROP SEQUENCE OLTP_AGENT_IMOBILIAR_SEQ;
+DROP SEQUENCE OLTP_CHIRIAS_SEQ;
+DROP SEQUENCE OLTP_APARTAMENT_SEQ;
+DROP SEQUENCE OLTP_CONTRACT_SEQ;
+DROP SEQUENCE OLTP_PLATA_CHIRIE_SEQ;
+
+CREATE SEQUENCE OLTP_ADRESA_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE OLTP_LOCALITATE_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE OLTP_JUDET_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE OLTP_AGENT_IMOBILIAR_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE OLTP_CHIRIAS_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE OLTP_APARTAMENT_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE OLTP_CONTRACT_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE OLTP_PLATA_CHIRIE_SEQ START WITH 1 INCREMENT BY 1;
+
 -- am facut triggerul asta care completeaza valoare_Estimata si pret_chirie automat 
 CREATE OR REPLACE TRIGGER tr_calculate_estimated_rent
 BEFORE INSERT ON  oltp_CONTRACT
@@ -225,7 +255,7 @@ INSERT INTO oltp_JUDET VALUES (oltp_JUDET_SEQ.NEXTVAL, 'Tulcea');
 INSERT INTO oltp_JUDET VALUES (oltp_JUDET_SEQ.NEXTVAL, 'Vaslui');
 INSERT INTO oltp_JUDET VALUES (oltp_JUDET_SEQ.NEXTVAL, 'Vâlcea');
 INSERT INTO oltp_JUDET VALUES (oltp_JUDET_SEQ.NEXTVAL, 'Vrancea');
-INSERT INTO oltp_JUDET VALUES (oltp_JUDET_SEQ.NEXTVAL, 'București');
+INSERT INTO oltp_JUDET VALUES (oltp_JUDET_SEQ.NEXTVAL, 'Bucuresti');
 
 INSERT INTO oltp_LOCALITATE VALUES (oltp_LOCALITATE_SEQ.NEXTVAL, 'Alba Iulia', 1);
 INSERT INTO oltp_LOCALITATE VALUES (oltp_LOCALITATE_SEQ.NEXTVAL, 'Aiud', 1);
@@ -714,7 +744,6 @@ INSERT into  oltp_CONTRACT values (oltp_CONTRACT_SEQ.NEXTVAL, 44, 56, 18, to_dat
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 23, 51, 25, to_date('01-05-2008', 'dd-mm-yyyy'), to_date('30-04-2012', 'dd-mm-yyyy'), 5, null, null, 4000);
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 49, 9, 37, to_date('10-07-2021', 'dd-mm-yyyy'), to_date('09-07-2022', 'dd-mm-yyyy'), 20, null, null, 3000);
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 13, 18, 54, to_date('01-08-2021', 'dd-mm-yyyy'), to_date('27-02-2022', 'dd-mm-yyyy'), 15, null, null, 1500);
-INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 32, 64, 70, to_date('01-01-2006', 'dd-mm-yyyy'), to_date('31-12-2018', 'dd-mm-yyyy'), 25, null, null, 2500);
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 85, 7, 10, to_date('10-02-2022', 'dd-mm-yyyy'), to_date('09-02-2023', 'dd-mm-yyyy'), 10, null, null, 3000);
 INSERT into  oltp_CONTRACT values (oltp_CONTRACT_SEQ.NEXTVAL, 42, 56, 10, to_date('15-07-2021', 'dd-mm-yyyy'), to_date('31-12-2021', 'dd-mm-yyyy'), 1, null, null, 0);
 INSERT into  oltp_CONTRACT values (oltp_CONTRACT_SEQ.NEXTVAL, 17, 3, 23, to_date('01-09-2021', 'dd-mm-yyyy'), to_date('28-02-2022', 'dd-mm-yyyy'), 5, null, null, 0);
@@ -746,10 +775,8 @@ INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 49, 62, 71, to_dat
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 13, 16, 58, to_date('01-03-2022', 'dd-mm-yyyy'), to_date('01-02-2023', 'dd-mm-yyyy'), 20, null, null, 2500);
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 25, 47, 13, to_date('01-02-2022', 'dd-mm-yyyy'), to_date('01-05-2022', 'dd-mm-yyyy'), 1, null, null, 2750);
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 81, 22, 45, to_date('01-07-2022', 'dd-mm-yyyy'), to_date('01-08-2023', 'dd-mm-yyyy'), 10, null, null, 300);
-INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 75, 53, 71, to_date('01-09-2003', 'dd-mm-yyyy'), to_date('01-10-2018', 'dd-mm-yyyy'), 10, null, null, 150);
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 6, 25, 42, to_date('15-02-2022', 'dd-mm-yyyy'), to_date('14-02-2023', 'dd-mm-yyyy'), 5, null, null, 0);
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 39, 13, 51, to_date('12-04-2022', 'dd-mm-yyyy'), to_date('11-04-2023', 'dd-mm-yyyy'), 10, null, null, 2000);
-INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 56, 44, 68, to_date('18-06-1999', 'dd-mm-yyyy'), to_date('17-06-2023', 'dd-mm-yyyy'), 15, null, null, 1500);
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 14, 39, 16, to_date('21-08-2022', 'dd-mm-yyyy'), to_date('20-08-2023', 'dd-mm-yyyy'), 20, null, null, 550);
 Insert into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 72, 63, 4, to_date('05-10-2022', 'dd-mm-yyyy'), to_date('04-10-2023', 'dd-mm-yyyy'), 25, null, null, 350);
 Insert into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 20, 7, 19, to_date('12-12-2007', 'dd-mm-yyyy'), to_date('11-12-2008', 'dd-mm-yyyy'), 1, null, null, 1000);
@@ -757,9 +784,50 @@ Insert into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 51, 17, 31, to_dat
 INSERT into  oltp_CONTRACT VALUES (oltp_CONTRACT_SEQ.NEXTVAL, 65, 23, 14, to_date('02-03-2021', 'dd-mm-yyyy'), to_date('01-09-2021', 'dd-mm-yyyy'), 10, null, null, 2000);
 INSERT into  oltp_CONTRACT values (oltp_CONTRACT_SEQ.NEXTVAL, 35, 14, 65, to_date('01-05-2021', 'dd-mm-yyyy'), to_date('31-10-2021', 'dd-mm-yyyy'), 1, null, null, 3500);
 
-insert into oltp_plata_chirie values (OLTP_PLATA_CHIRIE_SEQ.NEXTVAL, 1, 1, 2000, 300, to_date('12.05.2000', 'dd-mm-yyyy'), 1);
 
-execute sync_depozit;
 
-select * from pi_dw.dw_contract;
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 1, 1, 2000, 1800, to_date('01-01-2000', 'dd-mm-yyyy'), 1);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 2, 2, 2001, 3200, to_date('01-02-2001', 'dd-mm-yyyy'), 2);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 3, 3, 2002, 5000, to_date('01-03-2002', 'dd-mm-yyyy'), 3);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 4, 4, 2003, 3000, to_date('01-04-2003', 'dd-mm-yyyy'), 4);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 5, 5, 2004, 1000, to_date('01-05-2004', 'dd-mm-yyyy'), 5);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 6, 6, 2005, 2000, to_date('01-06-2005', 'dd-mm-yyyy'), 6);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 7, 7, 2006, 3200, to_date('01-07-2006', 'dd-mm-yyyy'), 7);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 8, 8, 2007, 3500, to_date('01-08-2007', 'dd-mm-yyyy'), 8);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 9, 9, 2008, 900, to_date('01-09-2008', 'dd-mm-yyyy'), 9);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 10, 10, 2009, 700, to_date('01-10-2009', 'dd-mm-yyyy'), 10);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 12, 6, 2010, 1200, to_date('15-06-2010', 'dd-mm-yyyy'), 3);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 27, 10, 2018, 900, to_date('08-10-2018', 'dd-mm-yyyy'), 1);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 5, 12, 2022, 1000, to_date('10-12-2022', 'dd-mm-yyyy'), 2);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 49, 9, 2011, 10000, to_date('20-09-2011', 'dd-mm-yyyy'), 4);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 21, 7, 2015, 1500, to_date('12-07-2015', 'dd-mm-yyyy'), 6);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 33, 3, 2008, 900, to_date('25-03-2008', 'dd-mm-yyyy'), 7);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 17, 11, 2019, 6000, to_date('07-11-2019', 'dd-mm-yyyy'), 5);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 41, 2, 2016, 1200, to_date('05-02-2016', 'dd-mm-yyyy'), 8);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 8, 5, 2014, 3500, to_date('18-05-2014', 'dd-mm-yyyy'), 2);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 47, 12, 2007, 9000, to_date('23-12-2007', 'dd-mm-yyyy'), 1);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 13, 7, 2022, 3200, TO_DATE('15-07-2022', 'dd-mm-yyyy'), 3);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 34, 3, 2023, 3500, TO_DATE('20-03-2023', 'dd-mm-yyyy'), 2);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 41, 11, 2021, 1200, TO_DATE('05-11-2021', 'dd-mm-yyyy'), 10);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 8, 4, 2004, 3500, TO_DATE('10-04-2004', 'dd-mm-yyyy'), 1);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 47, 12, 2010, 9000, TO_DATE('25-12-2010', 'dd-mm-yyyy'), 5);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 17, 8, 2008, 6000, TO_DATE('05-08-2008', 'dd-mm-yyyy'), 7);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 23, 6, 2017, 2800, TO_DATE('10-06-2017', 'dd-mm-yyyy'), 12);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 52, 2, 2022, 7500, TO_DATE('15-02-2022', 'dd-mm-yyyy'), 4);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 19, 10, 2012, 1200, TO_DATE('05-10-2012', 'dd-mm-yyyy'), 8);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 37, 1, 2019, 1800, TO_DATE('10-01-2019', 'dd-mm-yyyy'), 6);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 24, 3, 2022, 7500, TO_DATE('15-03-2022', 'DD-MM-YYYY'), 7);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 47, 10, 2021, 9000, TO_DATE('05-11-2021', 'DD-MM-YYYY'), 0);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 8, 6, 2020, 3500, TO_DATE('20-06-2020', 'DD-MM-YYYY'), 2);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 36, 1, 2009, 3000, TO_DATE('01-01-2009', 'DD-MM-YYYY'), 3);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 9, 9, 2022, 900, TO_DATE('28-09-2022', 'DD-MM-YYYY'), 11);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 31, 4, 2004, 6500, TO_DATE('01-04-2004', 'DD-MM-YYYY'), 1);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 17, 12, 2017, 6000, TO_DATE('28-12-2017', 'DD-MM-YYYY'), 5);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 52, 7, 2011, 7500, TO_DATE('01-07-2011', 'DD-MM-YYYY'), 0);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 2, 2, 2003, 3200, TO_DATE('15-02-2003', 'DD-MM-YYYY'), 4);
+INSERT INTO oltp_plata_chirie VALUES (oltp_plata_chirie_SEQ.NEXTVAL, 41, 11, 2019, 1200, TO_DATE('25-11-2019', 'DD-MM-YYYY'), 8);
 
+
+
+
+commit;

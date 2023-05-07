@@ -1,0 +1,9 @@
+agent
+	- replicare
+	- (done) fragmentare verticala
+
+
+din centralizat:
+	- la insert in functie de cheia straina determinam in ce fragment trebuie sa inseram
+	- la update cautam id-ul intr-unul dintre fragmente
+	- la delete la fel
