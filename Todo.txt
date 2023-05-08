@@ -8,13 +8,13 @@ Analiza:
 		- (done) fragmetnarea orizontala derivata
 		- fragmetnarea orizontala
 			- (done) tabele
-			- algoritm
+			- (Petru) algoritm
 	- (maybe) 5 Verificarea corectitudinii fragmentărilor realizate
 		- completitudinea
 		- reconstructia
 		- 
 	- (todo) 6 Decizia de replicare
-	- (todo) 7 scheme conceptuale
+	- (todo) 7 scheme conceptuale baze de date local
 	- (todo) 8 constrangeri
 	- (nu cred ca se face) 9
 
@@ -24,8 +24,8 @@ Implementare:
 	- (done) 3 Popularea cu date a bazelor de date
 		- de modificat insert-urile
 	- (de modificat) 4 transparență
-	- (todo agent) 5 Asigurarea sincronizării datelor pentru relațiile replicate
-	- (todo) 6 Asigurarea tuturor constrângerilor de integritate folosite în model
+	- (done) 5 Asigurarea sincronizării datelor pentru relațiile replicate
+	- (done) 6 Asigurarea tuturor constrângerilor de integritate folosite în model
 		- triggeri pe constrangerile unique
 	- (nu se face) 7
 

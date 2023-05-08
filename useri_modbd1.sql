@@ -8,6 +8,10 @@ grant resource to modbd_centralizat;
 
 grant create session to modbd_national;
 grant resource to modbd_national;
+
+grant create session to modbd_bucuresti;
+grant resource to modbd_bucuresti;
+
 grant CREATE PUBLIC DATABASE LINK to modbd_national;
 grant DROP PUBLIC DATABASE LINK to modbd_national;
 
@@ -39,9 +43,6 @@ grant select on modbd_centralizat.OLTP_LOCALITATE to modbd_bucuresti;
 grant select on modbd_centralizat.OLTP_ADRESA to modbd_bucuresti;
 
 grant select on modbd_centralizat.OLTP_AGENT_IMOBILIAR to modbd_national;
-
-grant create session to modbd_bucuresti;
-grant resource to modbd_bucuresti;
 
 ALTER USER modbd_centralizat quota unlimited on USERS;
 ALTER USER modbd_national quota unlimited on USERS;
