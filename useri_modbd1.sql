@@ -28,6 +28,18 @@ grant select on modbd_bucuresti.BUCURESTI_AGENT_IMOBILIAR_SEQ to modbd_national;
 grant select on modbd_bucuresti.BUCURESTI_CONTRACT_SEQ to modbd_national; 
 grant select on modbd_bucuresti.BUCURESTI_PLATA_CHIRIE_SEQ to modbd_national;
 
+
+grant select on modbd_centralizat.OLTP_PLATA_CHIRIE to modbd_bucuresti;
+grant select on modbd_centralizat.OLTP_CONTRACT to modbd_bucuresti;
+grant select on modbd_centralizat.OLTP_APARTAMENT to modbd_bucuresti;
+grant select on modbd_centralizat.OLTP_AGENT_IMOBILIAR to modbd_bucuresti;
+grant select on modbd_centralizat.OLTP_CHIRIAS to modbd_bucuresti;
+grant select on modbd_centralizat.OLTP_JUDET to modbd_bucuresti;
+grant select on modbd_centralizat.OLTP_LOCALITATE to modbd_bucuresti;
+grant select on modbd_centralizat.OLTP_ADRESA to modbd_bucuresti;
+
+grant select on modbd_centralizat.OLTP_AGENT_IMOBILIAR to modbd_national;
+
 grant create session to modbd_bucuresti;
 grant resource to modbd_bucuresti;
 

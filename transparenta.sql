@@ -60,6 +60,12 @@ select * from modbd_bucuresti.plata_chirie_bucuresti;
 
 -- 
 
+-------
+-- la triggeri ca sa fac vad unde trebuie sa fac update trebuie sa pot face diferenta intre id-urile vechi si cele noi
+-- ca sa acopar cazul de id-uri vechi verific daca id-ul curent este in range-ul de id-uri vechi sau daca e par sau impar
+-------
+
+
 
 -- trigger pentru insert, update, delete pe oltp_chirias
 CREATE OR REPLACE TRIGGER t_chirias
@@ -124,6 +130,23 @@ CREATE OR REPLACE TRIGGER t_apartament
 INSTEAD OF INSERT OR UPDATE OR DELETE ON oltp_apartament
 FOR EACH ROW
 BEGIN
+    if id_apartament < 54:
+        //suntem in provincie
+    else id_apartament >= 54 && id_apartament <= 151
+        // in bucuresti
+    else if MOD(:new.id_adresa, 2) = 0
+            //provincie
+    else  
+        //bucuresti
+
+    -- insert se verifica adresa
+    select id_adresa from adresa_bucuresti where id_adresa = :new.id_adresa
+
+
+    --update/delete 
+    select id_apartament from apartament_bucuresti where id_apartament = :new.id_apartament
+
+
     if MOD(:new.id_adresa, 2) = 0 then
         IF INSERTING THEN
             BEGIN
