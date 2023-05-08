@@ -204,6 +204,8 @@ alter table OLTP_APARTAMENT
   add constraint OLTP_APARTAMENT_CONFORT_IN
   check (tip_confort in (1, 2, 3));
 
+alter table OLTP_ADRESA add constraint OLTP_ADRESA__UK unique (STRADA, NUMAR, BLOC, SCARA, NUMAR_APARTAMENT, ID_LOCALITATE);
+
 create table OLTP_CONTRACT
 (
   id_contract         NUMBER(4) DEFAULT OLTP_CONTRACT_SEQ.NEXTVAL not null,
