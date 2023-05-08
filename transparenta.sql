@@ -35,12 +35,8 @@ select * from modbd_bucuresti.apartament_bucuresti;
 create or replace view oltp_AGENT_IMOBILIAR
 as 
 select ag_prov.id_agent, ag_prov.nume, ag_prov.prenume, ag_prov.email, ag_prov.telefon, ag_prov.data_angajare, ag_nat_1.salariu, ag_nat_1.comision
-from modbd_provincie.AGENT_IMOBILIAR_provincie@bd_provincie ag_prov
-join agent_imobiliar_national ag_nat_1 on ag_prov.id_agent = ag_nat_1.id_agent
-union all
-select ag_buc.id_agent, ag_buc.nume, ag_buc.prenume, ag_buc.email, ag_buc.telefon, ag_buc.data_angajare, ag_nat_2.salariu, ag_nat_2.comision
-from modbd_bucuresti.AGENT_IMOBILIAR_bucuresti ag_buc
-join agent_imobiliar_national ag_nat_2 on ag_buc.id_agent = ag_nat_2.id_agent;
+from modbd_provincie.AGENT_IMOBILIAR@bd_provincie ag_prov
+join agent_imobiliar ag_nat_1 on ag_prov.id_agent = ag_nat_1.id_agent;
 
 
 -- view pe contract
@@ -92,8 +88,15 @@ END;
 CREATE OR REPLACE TRIGGER t_adresa
 INSTEAD OF INSERT OR UPDATE OR DELETE ON oltp_adresa
 FOR EACH ROW
+DECLARE
+    v_in_bucuresti NUMBER := 0;
 BEGIN
-    if :new.id_localitate > 1 then
+    
+    select count (*) into v_in_bucuresti from modbd_bucuresti.localitate_bucuresti loc
+    join modbd_bucuresti.judet_bucuresti jud on loc.id_judet = jud.id_judet
+    where id_localitate = :new.id_localitate AND jud.nume = 'Bucuresti';
+    
+    if v_in_bucuresti = 0 then
         IF INSERTING THEN
             BEGIN
                 INSERT INTO adresa_provincie@bd_provincie VALUES (PROVINCIE_ADRESA_SEQ.NEXTVAL@bd_provincie, :NEW.strada, :NEW.numar, :NEW.bloc, :NEW.scara, :NEW.numar_apartament, :NEW.id_localitate);
@@ -129,25 +132,16 @@ END;
 CREATE OR REPLACE TRIGGER t_apartament
 INSTEAD OF INSERT OR UPDATE OR DELETE ON oltp_apartament
 FOR EACH ROW
+DECLARE
+    v_in_bucuresti NUMBER := 0;
 BEGIN
-    if id_apartament < 54:
-        //suntem in provincie
-    else id_apartament >= 54 && id_apartament <= 151
-        // in bucuresti
-    else if MOD(:new.id_adresa, 2) = 0
-            //provincie
-    else  
-        //bucuresti
 
-    -- insert se verifica adresa
-    select id_adresa from adresa_bucuresti where id_adresa = :new.id_adresa
-
-
-    --update/delete 
-    select id_apartament from apartament_bucuresti where id_apartament = :new.id_apartament
-
-
-    if MOD(:new.id_adresa, 2) = 0 then
+    select count (*) into v_in_bucuresti from modbd_bucuresti.adresa_bucuresti adr
+    join modbd_bucuresti.localitate_bucuresti loc on adr.id_localitate = loc.id_localitate
+    join modbd_bucuresti.judet_bucuresti jud on loc.id_judet = jud.id_judet
+    where adr.id_adresa = :NEW.id_adresa AND jud.nume = 'Bucuresti';
+    
+    if v_in_bucuresti = 0 then
         IF INSERTING THEN
             BEGIN
                 INSERT INTO apartament_provincie@bd_provincie VALUES (PROVINCIE_APARTAMENT_SEQ.NEXTVAL@bd_provincie, :NEW.id_adresa, :NEW.numar_camere, :NEW.etaj, :NEW.suprafata, :NEW.centrala_proprie, :NEW.pret_inchiriere, :NEW.tip_confort);
@@ -186,47 +180,30 @@ FOR EACH ROW
 DECLARE 
     id_agent_nextval NUMBER;
 BEGIN
-    if MOD(:new.id_agent, 2) = 0 then
-        id_agent_nextval := PROVINCIE_AGENT_IMOBILIAR_SEQ.NEXTVAL@bd_provincie;
-        IF INSERTING THEN
-            BEGIN
-                INSERT INTO agent_imobiliar_provincie@bd_provincie VALUES (id_agent_nextval, :NEW.prenume, :NEW.nume, :NEW.email, :NEW.telefon, :NEW.data_angajare);
-                INSERT INTO agent_imobiliar_national VALUES (id_agent_nextval, :NEW.salariu, :NEW.comision);
-            EXCEPTION
-                WHEN DUP_VAL_ON_INDEX THEN
-                    NULL; -- Înregistrarea există deja, nu se face nimic
-            END;
-        ELSIF UPDATING THEN
-            UPDATE agent_imobiliar_provincie@bd_provincie SET prenume = :NEW.prenume, nume = :NEW.nume, email = :NEW.email, telefon = :NEW.telefon, data_angajare = :NEW.data_angajare
-            WHERE id_agent = :NEW.id_agent AND (prenume <> :NEW.prenume OR nume <> :NEW.nume OR email <> :NEW.email OR telefon <> :NEW.telefon OR data_angajare <> :NEW.data_angajare) ;
-            
-            UPDATE agent_imobiliar_national SET salariu = :NEW.salariu, comision = :NEW.comision
-            WHERE id_agent = :NEW.id_agent AND (salariu <> :NEW.salariu OR comision <> :NEW.comision) ;
-        ELSIF DELETING THEN
-            DELETE FROM agent_imobiliar_provincie@bd_provincie WHERE id_agent = :OLD.id_agent;
-            DELETE FROM agent_imobiliar_national WHERE id_agent = :OLD.id_agent;
-        END IF;
-    else
-        IF INSERTING THEN
-            id_agent_nextval := modbd_bucuresti.BUCURESTI_AGENT_IMOBILIAR_SEQ.NEXTVAL;
-            BEGIN
-                INSERT INTO modbd_bucuresti.agent_imobiliar_bucuresti VALUES (id_agent_nextval, :NEW.prenume, :NEW.nume, :NEW.email, :NEW.telefon, :NEW.data_angajare);
-                INSERT INTO agent_imobiliar_national VALUES (id_agent_nextval, :NEW.salariu, :NEW.comision);
-            EXCEPTION
-                WHEN DUP_VAL_ON_INDEX THEN
-                    NULL; -- Înregistrarea există deja, nu se face nimic
-            END;
-        ELSIF UPDATING THEN
-            UPDATE modbd_bucuresti.agent_imobiliar_bucuresti SET prenume = :NEW.prenume, nume = :NEW.nume, email = :NEW.email, telefon = :NEW.telefon, data_angajare = :NEW.data_angajare 
-            WHERE id_agent = :NEW.id_agent AND (prenume <> :NEW.prenume OR nume <> :NEW.nume OR email <> :NEW.email OR telefon <> :NEW.telefon OR data_angajare <> :NEW.data_angajare) ;
-            
-            UPDATE agent_imobiliar_national SET salariu = :NEW.salariu, comision = :NEW.comision
-            WHERE id_agent = :NEW.id_agent AND (salariu <> :NEW.salariu OR comision <> :NEW.comision) ;
-        ELSIF DELETING THEN
-            DELETE FROM modbd_bucuresti.agent_imobiliar_bucuresti WHERE id_agent = :OLD.id_agent;
-            DELETE FROM agent_imobiliar_national WHERE id_agent = :OLD.id_agent;
-        END IF;
-    end if;
+    id_agent_nextval := modbd_national.NATIONAL_AGENT_IMOBILIAR_SEQ.NEXTVAL;
+    IF INSERTING THEN
+        BEGIN
+            INSERT INTO agent_imobiliar@bd_provincie VALUES (id_agent_nextval, :NEW.prenume, :NEW.nume, :NEW.email, :NEW.telefon, :NEW.data_angajare);
+            INSERT INTO modbd_bucuresti.agent_imobiliar VALUES (id_agent_nextval, :NEW.prenume, :NEW.nume, :NEW.email, :NEW.telefon, :NEW.data_angajare);
+            INSERT INTO modbd_national.agent_imobiliar VALUES (id_agent_nextval, :NEW.salariu, :NEW.comision);
+        EXCEPTION
+            WHEN DUP_VAL_ON_INDEX THEN
+                NULL; -- Înregistrarea există deja, nu se face nimic
+        END;
+    ELSIF UPDATING THEN
+        UPDATE agent_imobiliar@bd_provincie SET prenume = :NEW.prenume, nume = :NEW.nume, email = :NEW.email, telefon = :NEW.telefon, data_angajare = :NEW.data_angajare
+        WHERE id_agent = :NEW.id_agent AND (prenume <> :NEW.prenume OR nume <> :NEW.nume OR email <> :NEW.email OR telefon <> :NEW.telefon OR data_angajare <> :NEW.data_angajare) ;
+        
+        UPDATE modbd_bucuresti.agent_imobiliar SET prenume = :NEW.prenume, nume = :NEW.nume, email = :NEW.email, telefon = :NEW.telefon, data_angajare = :NEW.data_angajare 
+        WHERE id_agent = :NEW.id_agent AND (prenume <> :NEW.prenume OR nume <> :NEW.nume OR email <> :NEW.email OR telefon <> :NEW.telefon OR data_angajare <> :NEW.data_angajare) ;
+        
+        UPDATE modbd_national.agent_imobiliar SET salariu = :NEW.salariu, comision = :NEW.comision
+        WHERE id_agent = :NEW.id_agent AND (salariu <> :NEW.salariu OR comision <> :NEW.comision) ;
+    ELSIF DELETING THEN
+        DELETE FROM agent_imobiliar@bd_provincie WHERE id_agent = :OLD.id_agent;
+        DELETE FROM modbd_bucuresti.agent_imobiliar WHERE id_agent = :OLD.id_agent;
+        DELETE FROM modbd_national.agent_imobiliar WHERE id_agent = :OLD.id_agent;
+    END IF;
 END;
 /
 
@@ -234,8 +211,17 @@ END;
 CREATE OR REPLACE TRIGGER t_contract
 INSTEAD OF INSERT OR UPDATE OR DELETE ON oltp_CONTRACT
 FOR EACH ROW
+DECLARE
+    v_in_bucuresti NUMBER := 0;
 BEGIN
-    if MOD(:new.id_apartament, 2) = 0 then
+
+    select count (*) into v_in_bucuresti from modbd_bucuresti.apartament_bucuresti ap
+    join modbd_bucuresti.adresa_bucuresti adr on ap.id_adresa = adr.id_adresa
+    join modbd_bucuresti.localitate_bucuresti loc on adr.id_localitate = loc.id_localitate
+    join modbd_bucuresti.judet_bucuresti jud on loc.id_judet = jud.id_judet
+    where ap.id_apartament = :new.id_apartament AND jud.nume = 'Bucuresti';
+
+    if v_in_bucuresti = 0 then
         IF INSERTING THEN
             BEGIN
                 INSERT INTO contract_provincie@bd_provincie VALUES (PROVINCIE_CONTRACT_SEQ.NEXTVAL@bd_provincie, :NEW.id_chirias, :NEW.id_apartament, :NEW.id_agent, :NEW.data_inceput, :NEW.data_final, :NEW.ziua_scadenta, :NEW.pret_inchiriere, :NEW.valoare_estimata, :NEW.incasari);
@@ -272,8 +258,18 @@ END;
 CREATE OR REPLACE TRIGGER t_plata_chirie
 INSTEAD OF INSERT OR UPDATE OR DELETE ON oltp_plata_chirie
 FOR EACH ROW
+DECLARE
+    v_in_bucuresti NUMBER := 0;
 BEGIN
-    if MOD(:new.id_contract, 2) = 0 then
+
+    select count (*) into v_in_bucuresti from modbd_bucuresti.contract_bucuresti c
+    join modbd_bucuresti.apartament_bucuresti ap on c.id_apartament = ap.id_apartament
+    join modbd_bucuresti.adresa_bucuresti adr on ap.id_adresa = adr.id_adresa
+    join modbd_bucuresti.localitate_bucuresti loc on adr.id_localitate = loc.id_localitate
+    join modbd_bucuresti.judet_bucuresti jud on loc.id_judet = jud.id_judet
+    where c.id_contract = :new.id_contract AND jud.nume = 'Bucuresti';
+    
+    if v_in_bucuresti = 0 then
         IF INSERTING THEN
             BEGIN
                 INSERT INTO plata_chirie_provincie@bd_provincie VALUES (PROVINCIE_PLATA_CHIRIE_SEQ.NEXTVAL@bd_provincie, :NEW.id_contract, :NEW.luna, :NEW.an, :NEW.suma, :NEW.data_efectuarii, :NEW.nr_zile_intarziere);
