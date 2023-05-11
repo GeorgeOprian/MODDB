@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   Judet.findAll({
-    raw: true
+    
   })
     .then(records => {
       res.json(records)
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   Judet.findAll({
     where: { idJudet: req.params.id },
-    raw: true
+    
   })
     .then(record => {
       res.json(record)

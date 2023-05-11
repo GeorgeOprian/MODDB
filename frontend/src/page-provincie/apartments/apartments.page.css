@@ -1,0 +1,7 @@
+.apartment-page-style {
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+    padding: 2rem;
+    background-color: rgb(245, 237, 228);
+}

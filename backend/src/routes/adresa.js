@@ -3,12 +3,18 @@ import { Adresa } from '../models/adresa.js'
 import { Localitate } from "../models/localitate.js";
 import { Judet } from "../models/judet.js";
 import { AdresaBucuresti } from "../models/models-bucuresti/adresaBucuresti.js";
+import { Apartament } from "../models/apartament.js";
+import { Op, Sequelize } from "sequelize";
+import { SequelizeService } from "../config/db.js";
+import { Contract } from "../models/contract.js";
+import { PlataChirie } from "../models/plataChirie.js";
+
+let sequelize = SequelizeService.getModbbdNationalInstance();
 
 const router = Router();
 
 router.get('/', async (req, res) => {
   Adresa.findAll({
-    raw: true,
     include: [
       {
         model: Localitate,
@@ -29,7 +35,6 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   Adresa.findAll({
     where: { idAdresa: req.params.id },
-    raw: true
   })
     .then(record => {
       res.json(record)
@@ -38,11 +43,13 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  Adresa.create(req.body)
-    .then((item) => {
-      const result = item.dataValues;
-      result.idAdresa = item.idAdresa;
-      res.status(201).json(result);
+  sequelize.query(`INSERT INTO OLTP_ADRESA (STRADA, NUMAR, BLOC, SCARA, NUMAR_APARTAMENT, ID_LOCALITATE) VALUES ('${req.body.strada}', ${req.body.numar}, '${req.body.bloc}', '${req.body.scara}', ${req.body.numarApartament}, ${req.body.ID_LOCALITATE});`,
+  {
+    type: sequelize.QueryTypes.INSERT,
+    
+  })
+  .then((item) => {
+      res.status(201).json(item);
     })
     .catch(next);
 });
@@ -59,15 +66,61 @@ router.put('/:id', async (req, res, next) => {
     .catch(next);
 });
 
-router.delete('/:id', (req, res, next) => {
-  Adresa.destroy({
-    where: { idAdresa: req.params.id },
-  })
-    .then(affectedCount => {
-      if (affectedCount) res.json({ message: 'Record deleted' });
-      else res.status(404).json({ error: 'Record not found' });
-    })
-    .catch(err => res.status(500).json({ error: err.message }));
+router.delete('/:id', async (req, res, next) => {
+  await sequelize.transaction(async (t) => {
+
+    try {
+      let apartament = await Apartament.findOne({ 
+        where: {
+          ID_ADRESA: req.params.id
+        },
+        transaction: t  
+      })
+  
+      let contracts = await Contract.findAll({
+        where: {
+          ID_APARTAMENT: apartament.dataValues.idApartament
+        },
+        transaction: t  
+      })
+  
+      let contractsIds = contracts.map(m => m.dataValues.idContract);
+      
+      await PlataChirie.destroy({
+        where: {
+          ID_CONTRACT: {
+            [Op.in]: contractsIds
+          }
+        },
+        transaction: t
+      })
+  
+      await Contract.destroy({
+        where: {
+          ID_APARTAMENT: apartament.dataValues.idApartament
+        },
+        transaction: t
+      })
+  
+      await Apartament.destroy({
+        where: {
+          ID_ADRESA: req.params.id
+        },
+        transaction: t
+      });
+    
+      await Adresa.destroy({
+        where: { idAdresa: req.params.id },
+        transaction: t
+      })
+      
+      res.json({ message: 'Record deleted' });
+
+    } catch (err) {
+      res.status(500).json({ error: err.message })
+    }
+  });
+
 });
 
 

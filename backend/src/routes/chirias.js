@@ -1,11 +1,14 @@
 import { Router } from "express";
 import { Chirias } from '../models/chirias.js'
+import { SequelizeService } from "../config/db.js";
 
 const router = Router();
 
+let sequelize = SequelizeService.getModbbdNationalInstance();
+
 router.get('/', async (req, res) => {
   Chirias.findAll({
-    raw: true
+   
   })
     .then(records => {
       res.json(records)
@@ -16,7 +19,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   Chirias.findAll({
     where: { idChirias: req.params.id },
-    raw: true
+   
   })
     .then(record => {
       res.json(record)
@@ -25,13 +28,17 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  Chirias.create(req.body)
-    .then((item) => {
-      const result = item.dataValues;
-      result.idChirias = item.idChirias;
-      res.status(201).json(result);
-    })
-    .catch(next);
+  let dataNastere = `${new Date(req.body.dataNastere).getFullYear()}-${new Date(req.body.dataNastere).getMonth()}-${new Date(req.body.dataNastere).getDate()}`;
+
+  sequelize.query(`INSERT INTO OLTP_CHIRIAS (prenume, nume, email, telefon, sex, data_nastere, starea_civila) VALUES ('${req.body.prenume}', '${req.body.nume}', '${req.body.email}', '${req.body.telefon}', '${req.body.sex}', to_date('${dataNastere}', 'YYYY-MM-DD'), '${req.body.stareaCivila}');`,
+  {
+    type: sequelize.QueryTypes.INSERT,
+    
+  })
+  .then((item) => {
+      res.status(201).json(item);
+  })
+  .catch(next);
 });
 
 router.put('/:id', async (req, res, next) => {

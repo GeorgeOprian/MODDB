@@ -5,7 +5,6 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   ChiriasProvincie.findAll({
-    raw: true
   })
     .then(records => {
       res.json(records)
@@ -14,9 +13,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  Chirias.findAll({
+  ChiriasProvincie.findAll({
     where: { idChirias: req.params.id },
-    raw: true
   })
     .then(record => {
       res.json(record)
@@ -25,7 +23,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  Chirias.create(req.body)
+  ChiriasProvincie.create(req.body)
     .then((item) => {
       const result = item.dataValues;
       result.idChirias = item.idChirias;
@@ -36,7 +34,7 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
   const id = req.params.id;
-  Chirias.update(
+  ChiriasProvincie.update(
     req.body,
     { where: { idChirias: id } }
   ).then((result) => {
@@ -47,7 +45,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-  Chirias.destroy({
+  ChiriasProvincie.destroy({
     where: { idChirias: req.params.id },
   })
     .then(affectedCount => {

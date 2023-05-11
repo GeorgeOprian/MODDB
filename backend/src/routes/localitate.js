@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   Localitate.findAll({
-    raw: true,
+    
     include: [Judet]
   })
     .then(records => {
@@ -19,7 +19,6 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   Localitate.findAll({
     where: { idLocalitate: req.params.id },
-    raw: true
   })
     .then(record => {
       res.json(record)

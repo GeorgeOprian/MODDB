@@ -5,7 +5,6 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   AgentImobiliarProvincie.findAll({
-    raw: true
   })
     .then(records => {
       res.json(records)
@@ -14,9 +13,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  AgentImobiliar.findAll({
-    where: { idAgent: req.params.id },
-    raw: true
+  AgentImobiliarProvincie.findAll({
+    where: { idAgent: req.params.id }
   })
     .then(record => {
       res.json(record)
@@ -25,7 +23,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  AgentImobiliar.create(req.body)
+  AgentImobiliarProvincie.create(req.body)
     .then((item) => {
       const result = item.dataValues;
       result.idAgent = item.idAgent;
@@ -36,7 +34,7 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
   const id = req.params.id;
-  AgentImobiliar.update(
+  AgentImobiliarProvincie.update(
     req.body,
     { where: { idAgent: id } }
   ).then((result) => {
@@ -47,7 +45,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-  AgentImobiliar.destroy({
+  AgentImobiliarProvincie.destroy({
     where: { idAgent: req.params.id },
   })
     .then(affectedCount => {

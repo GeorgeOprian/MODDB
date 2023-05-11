@@ -47,9 +47,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  PlataChirie.findAll({
+  PlataChirieProvincie.findAll({
     where: { idPlata: req.params.id },
-    raw: true
   })
     .then(record => {
       res.json(record)
@@ -58,7 +57,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  PlataChirie.create(req.body)
+  PlataChirieProvincie.create(req.body)
     .then((item) => {
       const result = item.dataValues;
       result.idPlata = item.idPlata;
@@ -69,7 +68,7 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
   const id = req.params.id;
-  PlataChirie.update(
+  PlataChirieProvincie.update(
     req.body,
     { where: { idPlata: id } }
   ).then((result) => {
@@ -80,7 +79,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-  PlataChirie.destroy({
+  PlataChirieProvincie.destroy({
     where: { idPlata: req.params.id },
   })
     .then(affectedCount => {

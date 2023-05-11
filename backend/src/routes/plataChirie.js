@@ -6,8 +6,11 @@ import { Adresa } from "../models/adresa.js";
 import { Localitate } from "../models/localitate.js";
 import { Judet } from "../models/judet.js";
 import { Chirias } from "../models/chirias.js";
+import { SequelizeService } from "../config/db.js";
 
 const router = Router();
+
+let sequelize = SequelizeService.getModbbdNationalInstance();
 
 router.get('/', async (req, res) => {
   PlataChirie.findAll({
@@ -49,7 +52,6 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   PlataChirie.findAll({
     where: { idPlata: req.params.id },
-    raw: true
   })
     .then(record => {
       res.json(record)
@@ -58,11 +60,15 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  PlataChirie.create(req.body)
-    .then((item) => {
-      const result = item.dataValues;
-      result.idPlata = item.idPlata;
-      res.status(201).json(result);
+  let dataEfectuarii = `${new Date(req.body.dataEfectuarii).getFullYear()}-${new Date(req.body.dataEfectuarii).getMonth()}-${new Date(req.body.dataEfectuarii).getDate()}`;
+
+  sequelize.query(`INSERT INTO oltp_plata_chirie (id_contract, luna, an, suma, data_efectuarii, nr_zile_intarziere) VALUES (${req.body.idContract}, ${req.body.luna}, ${req.body.an}, ${req.body.suma}, to_date('${dataEfectuarii}', 'YYYY-MM-DD'), ${req.body.nrZileIntarziere});`,
+  {
+    type: sequelize.QueryTypes.INSERT,
+    
+  })
+  .then((item) => {
+      res.status(201).json(item);
     })
     .catch(next);
 });

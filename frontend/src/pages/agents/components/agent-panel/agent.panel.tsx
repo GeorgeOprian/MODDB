@@ -37,8 +37,8 @@ const AgentPanel = ({
         telefon: "",
         email: "",
         dataAngajare: null,
-        salariu: null,
-        comision: null,
+        salariu: 0,
+        comision: 0,
     })
 
     const changeState = (key: any, value: any) => {
@@ -52,7 +52,6 @@ const AgentPanel = ({
     useEffect(
         () => {
             if(!editAgent) return;
-            console.log(dayjs(editAgent.dataAngajare as any))
            
             setAgentField(() => ({
                 nume: editAgent.nume,

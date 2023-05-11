@@ -1,6 +1,7 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 import { SequelizeService } from "../config/db.js";
 import { Localitate } from "./localitate.js";
+import { Apartament } from "./apartament.js";
 
 export class Adresa extends Model {
     idAdresa;
@@ -17,9 +18,8 @@ Adresa.init(
     idAdresa: {
       type: DataTypes.NUMBER,
       primaryKey: true,
-      autoIncrement: true,
       allowNull: true,
-      field: "ID_ADRESA",
+      field: "ID_ADRESA"
     },
     // idLocalitate: {
     //   type: DataTypes.NUMBER,

@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 import { SequelizeService } from "../../config/db.js";
 import { ContractBucuresti } from "./contractBucuresti.js";
 
@@ -17,9 +17,9 @@ PlataChirieBucuresti.init(
     idPlata: {
       type: DataTypes.NUMBER,
       primaryKey: true,
-      autoIncrement: true,
       allowNull: true,
       field: "ID_PLATA",
+      defaultValue: Sequelize.literal('BUCURESTI_PLATA_CHIRIE_SEQ.NEXTVAL')
     },
     // idContract: {
     //   type: DataTypes.NUMBER,

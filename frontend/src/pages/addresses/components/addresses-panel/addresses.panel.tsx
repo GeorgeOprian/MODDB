@@ -5,7 +5,6 @@ import { FormStyle } from "./addresses.panel.style";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from "dayjs";
 import { createAddressDB, editAddressDB, getCounties } from "../../addresses.page.requests";
 
 type AddressPanelType = {
@@ -33,9 +32,9 @@ const AddressPanel = ({
 
     const [addressFields, setAddressField] = useState<AddressFields>({
         bloc: "",
-        ID_LOCALITATE: null,
-        numar: null,
-        numarApartament: null,
+        ID_LOCALITATE: 0,
+        numar: 0,
+        numarApartament: 0,
         scara: "",
         strada: "",
         localitate: null
@@ -52,6 +51,7 @@ const AddressPanel = ({
 
     useEffect(
         () => {
+            console.log(editAddress)
             if(!editAddress || !counties) return;
            
             setAddressField(() => ({
@@ -83,12 +83,12 @@ const AddressPanel = ({
     const editAddressAction = async () => {
 
         const body = {
-            bloc: addressFields.bloc,
-            ID_LOCALITATE: addressFields.localitate?.idLocalitate,
-            numar: addressFields.numar,
-            numarApartament: addressFields.numarApartament,
-            scara: addressFields.scara,
             strada: addressFields.strada,
+            numar: addressFields.numar,
+            bloc: addressFields.bloc,
+            scara: addressFields.scara,
+            numarApartament: addressFields.numarApartament,
+            ID_LOCALITATE: addressFields.localitate?.idLocalitate,
         }
 
         try {
@@ -113,13 +113,14 @@ const AddressPanel = ({
     const createAddressAction = async () => {
 
         const body = {
-            bloc: addressFields.bloc,
-            ID_LOCALITATE: addressFields.localitate?.idLocalitate,
-            numar: addressFields.numar,
-            numarApartament: addressFields.numarApartament,
-            scara: addressFields.scara,
             strada: addressFields.strada,
+            numar: parseInt((addressFields.numar as any).toString()),
+            bloc: addressFields.bloc,
+            scara: addressFields.scara,
+            numarApartament: parseInt((addressFields.numarApartament as any).toString()),
+            ID_LOCALITATE: addressFields.localitate?.idLocalitate,
         }
+        console.log(body)
 
         try {
             await  createAddressDB(body);
@@ -141,7 +142,7 @@ const AddressPanel = ({
     }
 
     const getFullAddress = (county: any) => {
-        return `${county.nume}, ${county["Judet.nume"]}`
+        return `${county.nume}, ${county.Judet.nume}`
     }
 
     return (

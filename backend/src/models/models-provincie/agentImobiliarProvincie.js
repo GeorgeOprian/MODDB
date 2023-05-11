@@ -50,7 +50,7 @@ AgentImobiliarProvincie.init(
   {
     sequelize: SequelizeService.getModbdProvincieInstance(),
     modelName: "AgentImobiliarProvincie",
-    tableName: "AGENT_IMOBILIAR_PROVINCIE",
+    tableName: "AGENT_IMOBILIAR",
     createdAt: false,
     updatedAt: false
   }

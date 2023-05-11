@@ -6,7 +6,6 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   LocalitateProvincie.findAll({
-    raw: true,
     include: [JudetProvincie]
   })
     .then(records => {
@@ -16,9 +15,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  Localitate.findAll({
+  LocalitateProvincie.findAll({
     where: { idLocalitate: req.params.id },
-    raw: true
   })
     .then(record => {
       res.json(record)
@@ -27,7 +25,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  Localitate.create(req.body)
+  LocalitateProvincie.create(req.body)
     .then((item) => {
       const result = item.dataValues;
       result.idLocalitate = item.idLocalitate;
@@ -38,7 +36,7 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
   const id = req.params.id;
-  Localitate.update(
+  LocalitateProvincie.update(
     req.body,
     { where: { idLocalitate: id } }
   ).then((result) => {
@@ -49,7 +47,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-  Localitate.destroy({
+  LocalitateProvincie.destroy({
     where: { idLocalitate: req.params.id },
   })
     .then(affectedCount => {

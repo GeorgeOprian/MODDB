@@ -50,7 +50,7 @@ AgentImobiliarBucuresti.init(
   {
     sequelize: SequelizeService.getModbdBucurestiInstance(),
     modelName: "AgentImobiliarBucuresti",
-    tableName: "AGENT_IMOBILIAR_BUCURESTI",
+    tableName: "AGENT_IMOBILIAR",
     createdAt: false,
     updatedAt: false
   }

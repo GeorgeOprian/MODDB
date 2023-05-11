@@ -4,15 +4,22 @@ import { ApartamentProvincie } from "../../models/models-provincie/apartamentPro
 import { AdresaProvincie } from "../../models/models-provincie/adresaProvincie.js";
 import { LocalitateProvincie } from "../../models/models-provincie/localitateProvincie.js";
 import { JudetProvincie } from "../../models/models-provincie/judetProvincie.js";
+import { ContractProvincie } from "../../models/models-provincie/contractProvincie.js";
+import { ChiriasProvincie } from "../../models/models-provincie/chiriasProvincie.js";
+import { AgentImobiliarProvincie } from "../../models/models-provincie/agentImobiliarProvincie.js";
+import { PlataChirieProvincie } from "../../models/models-provincie/plataChirieProvincie.js";
+import { SequelizeService } from "../../config/db.js";
 
 const router = Router();
+
+let sequelize = SequelizeService.getModbdProvincieInstance();
 
 router.get('/', async (req, res) => {
   const params = req.query;
   if (params.busy !== undefined) {
     if (params.busy === 'true') {
       try {
-        let busyAparments = await Contract.findAll({
+        let busyAparments = await ContractProvincie.findAll({
           where:{
             dataFinal: {
               [Op.gt]: new Date(),
@@ -23,19 +30,19 @@ router.get('/', async (req, res) => {
           },
           include: [
             {
-              model: Chirias
+              model: ChiriasProvincie
             },
             {
-              model: Apartament,
+              model: ApartamentProvincie,
               include: [
                 {
-                  model: Adresa,
+                  model: AdresaProvincie,
                   include: [
                     {
-                      model: Localitate,
+                      model: LocalitateProvincie,
                       include: [
                         {
-                          model: Judet
+                          model: JudetProvincie
                         }
                       ]
                     }
@@ -44,7 +51,7 @@ router.get('/', async (req, res) => {
               ]
             },
             {
-              model: AgentImobiliar
+              model: AgentImobiliarProvincie
             },
           ]
         });
@@ -56,7 +63,7 @@ router.get('/', async (req, res) => {
 
     } else if((params.busy === 'false')) {
       try {
-        let busyAparments = await Contract.findAll({
+        let busyAparments = await ContractProvincie.findAll({
           where:{
             dataFinal: {
               [Op.gt]: new Date(),
@@ -68,22 +75,21 @@ router.get('/', async (req, res) => {
         });
         let busyAparmentsIds = busyAparments.map(m => m["ID_APARTAMENT"]);
   
-        let freeApartments = await Apartament.findAll({
+        let freeApartments = await ApartamentProvincie.findAll({
           where: {
             ID_APARTAMENT: {
               [Op.notIn]: busyAparmentsIds
             }
           },
-          raw: true,
           include: [
             {
-              model: Adresa,
+              model: AdresaProvincie,
               include: [
                 {
-                  model: Localitate,
+                  model: LocalitateProvincie,
                   include: [
                     {
-                      model: Judet
+                      model: JudetProvincie
                     }
                   ]
                 }
@@ -99,13 +105,13 @@ router.get('/', async (req, res) => {
   } 
   else if (params.idChirias) {
       try {
-        let clientApartment = await Contract.findOne({
+        let clientApartment = await ContractProvincie.findOne({
           where: {
             ID_CHIRIAS: {
               [Op.eq]: params.idChirias
             }
           },
-          include: [Chirias, Apartament, AgentImobiliar]
+          include: [ChiriasProvincie, ApartamentProvincie, AgentImobiliarProvincie]
         })
 
         res.json(clientApartment)
@@ -115,7 +121,6 @@ router.get('/', async (req, res) => {
 
   } else {
     ApartamentProvincie.findAll({
-      raw: true,
       include: [
         {
           model: AdresaProvincie,
@@ -140,19 +145,18 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  console.log(req.params.id);
-  Apartament.findOne({
+
+  ApartamentProvincie.findOne({
     where: { idApartament: req.params.id },
-    raw: true,
     include: [
       {
-        model: Adresa,
+        model: AdresaProvincie,
         include: [
           {
-            model: Localitate,
+            model: LocalitateProvincie,
             include: [
               {
-                model: Judet
+                model: JudetProvincie
               }
             ]
           }
@@ -167,7 +171,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  Apartament.create(req.body)
+  ApartamentProvincie.create(req.body)
     .then((item) => {
       const result = item.dataValues;
       result.idApartament = item.idApartament;
@@ -178,7 +182,7 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
   const id = req.params.id;
-  Apartament.update(
+  ApartamentProvincie.update(
     req.body,
     { where: { idApartament: id } }
   ).then((result) => {
@@ -188,15 +192,55 @@ router.put('/:id', async (req, res, next) => {
     .catch(next);
 });
 
-router.delete('/:id', (req, res, next) => {
-  Apartament.destroy({
-    where: { idApartament: req.params.id },
-  })
-    .then(affectedCount => {
-      if (affectedCount) res.json({ message: 'Record deleted' });
-      else res.status(404).json({ error: 'Record not found' });
-    })
-    .catch(err => res.status(500).json({ error: err.message }));
+router.delete('/:id', async (req, res, next) => {
+  await sequelize.transaction(async (t) => {
+
+    try {
+      let apartament = await ApartamentProvincie.findOne({ 
+        where: {
+          idApartament: req.params.id
+        },
+        transaction: t  
+      })
+  
+      let contracts = await ContractProvincie.findAll({
+        where: {
+          ID_APARTAMENT: apartament.dataValues.idApartament
+        },
+        transaction: t  
+      })
+  
+      let contractsIds = contracts.map(m => m.dataValues.idContract);
+      
+      await PlataChirieProvincie.destroy({
+        where: {
+          ID_CONTRACT: {
+            [Op.in]: contractsIds
+          }
+        },
+        transaction: t
+      })
+  
+      await ContractProvincie.destroy({
+        where: {
+          ID_APARTAMENT: apartament.dataValues.idApartament
+        },
+        transaction: t
+      })
+  
+      await ApartamentProvincie.destroy({
+        where: {
+          idApartament: req.params.id
+        },
+        transaction: t
+      });
+      
+      res.json({ message: 'Record deleted' });
+
+    } catch (err) {
+      res.status(500).json({ error: err.message })
+    }
+  });
 });
 
 export { router as apartamentProvincieRouter };

@@ -4,15 +4,22 @@ import { ApartamentBucuresti } from "../../models/models-bucuresti/apartamentBuc
 import { AdresaBucuresti } from "../../models/models-bucuresti/adresaBucuresti.js";
 import { LocalitateBucuresti } from "../../models/models-bucuresti/localitateBucuresti.js";
 import { JudetBucuresti } from "../../models/models-bucuresti/judetBucuresti.js";
+import { ContractBucuresti } from "../../models/models-bucuresti/contractBucuresti.js";
+import { ChiriasBucuresti } from "../../models/models-bucuresti/chiriasBucuresti.js";
+import { AgentImobiliarBucuresti } from "../../models/models-bucuresti/agentImobiliarBucuresti.js";
+import { PlataChirieBucuresti } from "../../models/models-bucuresti/plataChirieBucuresti.js";
+import { SequelizeService } from "../../config/db.js";
 
 const router = Router();
+
+let sequelize = SequelizeService.getModbdBucurestiInstance();
 
 router.get('/', async (req, res) => {
   const params = req.query;
   if (params.busy !== undefined) {
     if (params.busy === 'true') {
       try {
-        let busyAparments = await Contract.findAll({
+        let busyAparments = await ContractBucuresti.findAll({
           where:{
             dataFinal: {
               [Op.gt]: new Date(),
@@ -23,19 +30,19 @@ router.get('/', async (req, res) => {
           },
           include: [
             {
-              model: Chirias
+              model: ChiriasBucuresti
             },
             {
-              model: Apartament,
+              model: ApartamentBucuresti,
               include: [
                 {
-                  model: Adresa,
+                  model: AdresaBucuresti,
                   include: [
                     {
-                      model: Localitate,
+                      model: LocalitateBucuresti,
                       include: [
                         {
-                          model: Judet
+                          model: JudetBucuresti
                         }
                       ]
                     }
@@ -44,7 +51,7 @@ router.get('/', async (req, res) => {
               ]
             },
             {
-              model: AgentImobiliar
+              model: AgentImobiliarBucuresti
             },
           ]
         });
@@ -56,7 +63,7 @@ router.get('/', async (req, res) => {
 
     } else if((params.busy === 'false')) {
       try {
-        let busyAparments = await Contract.findAll({
+        let busyAparments = await ContractBucuresti.findAll({
           where:{
             dataFinal: {
               [Op.gt]: new Date(),
@@ -68,22 +75,22 @@ router.get('/', async (req, res) => {
         });
         let busyAparmentsIds = busyAparments.map(m => m["ID_APARTAMENT"]);
   
-        let freeApartments = await Apartament.findAll({
+        let freeApartments = await ApartamentBucuresti.findAll({
           where: {
             ID_APARTAMENT: {
               [Op.notIn]: busyAparmentsIds
             }
           },
-          raw: true,
+          
           include: [
             {
-              model: Adresa,
+              model: AdresaBucuresti,
               include: [
                 {
-                  model: Localitate,
+                  model: LocalitateBucuresti,
                   include: [
                     {
-                      model: Judet
+                      model: JudetBucuresti
                     }
                   ]
                 }
@@ -99,13 +106,13 @@ router.get('/', async (req, res) => {
   } 
   else if (params.idChirias) {
       try {
-        let clientApartment = await Contract.findOne({
+        let clientApartment = await ContractBucuresti.findOne({
           where: {
             ID_CHIRIAS: {
               [Op.eq]: params.idChirias
             }
           },
-          include: [Chirias, Apartament, AgentImobiliar]
+          include: [ChiriasBucuresti, ApartamentBucuresti, AgentImobiliarBucuresti]
         })
 
         res.json(clientApartment)
@@ -115,7 +122,7 @@ router.get('/', async (req, res) => {
 
   } else {
     ApartamentBucuresti.findAll({
-      raw: true,
+      
       include: [
         {
           model: AdresaBucuresti,
@@ -140,19 +147,19 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  console.log(req.params.id);
-  Apartament.findOne({
+
+  ApartamentBucuresti.findOne({
     where: { idApartament: req.params.id },
-    raw: true,
+    
     include: [
       {
-        model: Adresa,
+        model: AdresaBucuresti,
         include: [
           {
-            model: Localitate,
+            model: LocalitateBucuresti,
             include: [
               {
-                model: Judet
+                model: JudetBucuresti
               }
             ]
           }
@@ -167,7 +174,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  Apartament.create(req.body)
+  ApartamentBucuresti.create(req.body)
     .then((item) => {
       const result = item.dataValues;
       result.idApartament = item.idApartament;
@@ -178,7 +185,7 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
   const id = req.params.id;
-  Apartament.update(
+  ApartamentBucuresti.update(
     req.body,
     { where: { idApartament: id } }
   ).then((result) => {
@@ -188,15 +195,55 @@ router.put('/:id', async (req, res, next) => {
     .catch(next);
 });
 
-router.delete('/:id', (req, res, next) => {
-  Apartament.destroy({
-    where: { idApartament: req.params.id },
-  })
-    .then(affectedCount => {
-      if (affectedCount) res.json({ message: 'Record deleted' });
-      else res.status(404).json({ error: 'Record not found' });
-    })
-    .catch(err => res.status(500).json({ error: err.message }));
+router.delete('/:id', async (req, res, next) => {
+  await sequelize.transaction(async (t) => {
+
+    try {
+      let apartament = await ApartamentBucuresti.findOne({ 
+        where: {
+          idApartament: req.params.id
+        },
+        transaction: t  
+      })
+  
+      let contracts = await ContractBucuresti.findAll({
+        where: {
+          ID_APARTAMENT: apartament.dataValues.idApartament
+        },
+        transaction: t  
+      })
+  
+      let contractsIds = contracts.map(m => m.dataValues.idContract);
+      
+      await PlataChirieBucuresti.destroy({
+        where: {
+          ID_CONTRACT: {
+            [Op.in]: contractsIds
+          }
+        },
+        transaction: t
+      })
+  
+      await ContractBucuresti.destroy({
+        where: {
+          ID_APARTAMENT: apartament.dataValues.idApartament
+        },
+        transaction: t
+      })
+  
+      await ApartamentBucuresti.destroy({
+        where: {
+          idApartament: req.params.id
+        },
+        transaction: t
+      });
+      
+      res.json({ message: 'Record deleted' });
+
+    } catch (err) {
+      res.status(500).json({ error: err.message })
+    }
+  });
 });
 
 export { router as apartamentBucurestiRouter };

@@ -8,6 +8,7 @@ import { Judet } from "../models/judet.js";
 import { Contract } from "../models/contract.js";
 import { Chirias } from "../models/chirias.js";
 import { AgentImobiliar } from "../models/agentImobiliar.js";
+import { PlataChirie } from "../models/plataChirie.js";
 
 const router = Router();
 
@@ -17,17 +18,6 @@ router.get('/', async (req, res) => {
   const params = req.query;
   if (params.busy !== undefined) {
     if (params.busy === 'true') {
-      // sequelize.query(`SELECT ID_APARTAMENT, ID_ADRESA, NUMAR_CAMERE, ETAJ, SUPRAFATA, CENTRALA_PROPRIE, PRET_INCHIRIERE, TIP_CONFORT
-      //   from PI_OLTP.OLTP_APARTAMENT 
-      //   WHERE ID_APARTAMENT NOT IN (SELECT ID_APARTAMENT FROM PI_OLTP.OLTP_CONTRACT WHERE DATA_FINAL > SYSDATE)`, {
-      //   type: sequelize.QueryTypes.SELECT,
-      //   model: Apartament,
-      //   mapToModel: true
-      // }).then(records => {
-      //   res.json(records)
-      // })
-      // .catch(err => res.status(500).json({ error: err.message }));
-
       try {
         let busyAparments = await Contract.findAll({
           where:{
@@ -91,7 +81,7 @@ router.get('/', async (req, res) => {
               [Op.notIn]: busyAparmentsIds
             }
           },
-          raw: true,
+          
           include: [
             {
               model: Adresa,
@@ -115,20 +105,6 @@ router.get('/', async (req, res) => {
     }
   } 
   else if (params.idChirias) {
-    // sequelize.query(`SELECT a.ID_APARTAMENT, a.ID_ADRESA, a.NUMAR_CAMERE, a.ETAJ, a.SUPRAFATA, a.CENTRALA_PROPRIE, a.PRET_INCHIRIERE, a.TIP_CONFORT
-    //   FROM PI_OLTP.OLTP_APARTAMENT a
-    //   JOIN PI_OLTP.OLTP_CONTRACT co on a.ID_APARTAMENT = co.ID_APARTAMENT
-    //   JOIN PI_OLTP.OLTP_CHIRIAS c on co.ID_CHIRIAS = c.ID_CHIRIAS
-    //   WHERE co.DATA_FINAL > SYSDATE
-    //   AND c.ID_CHIRIAS = :idChirias;`, {
-    //     replacements: { idChirias: params.idChirias },
-    //     type: sequelize.QueryTypes.SELECT,
-    //     model: Apartament,
-    //     mapToModel: true
-    // }).then(records => {
-    //   res.json(records)
-    // })
-    // .catch(err => res.status(500).json({ error: err.message }));
       try {
         let clientApartment = await Contract.findOne({
           where: {
@@ -146,7 +122,7 @@ router.get('/', async (req, res) => {
 
   } else {
     Apartament.findAll({
-      raw: true,
+      
       include: [
         {
           model: Adresa,
@@ -174,7 +150,7 @@ router.get('/:id', async (req, res) => {
   console.log(req.params.id);
   Apartament.findOne({
     where: { idApartament: req.params.id },
-    raw: true,
+    
     include: [
       {
         model: Adresa,
@@ -198,11 +174,13 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  Apartament.create(req.body)
-    .then((item) => {
-      const result = item.dataValues;
-      result.idApartament = item.idApartament;
-      res.status(201).json(result);
+  sequelize.query(`INSERT INTO OLTP_APARTAMENT (ID_ADRESA, NUMAR_CAMERE, ETAJ, SUPRAFATA, CENTRALA_PROPRIE, PRET_INCHIRIERE, TIP_CONFORT) VALUES (${req.body.ID_ADRESA}, ${req.body.numarCamere}, ${req.body.etaj}, ${req.body.suprafata}, '${req.body.centralaProprie}', ${req.body.pretInchiriere}, ${req.body.tipConfort});`,
+  {
+    type: sequelize.QueryTypes.INSERT,
+    
+  })
+  .then((item) => {
+      res.status(201).json(item);
     })
     .catch(next);
 });
@@ -219,15 +197,55 @@ router.put('/:id', async (req, res, next) => {
     .catch(next);
 });
 
-router.delete('/:id', (req, res, next) => {
-  Apartament.destroy({
-    where: { idApartament: req.params.id },
-  })
-    .then(affectedCount => {
-      if (affectedCount) res.json({ message: 'Record deleted' });
-      else res.status(404).json({ error: 'Record not found' });
-    })
-    .catch(err => res.status(500).json({ error: err.message }));
+router.delete('/:id', async (req, res, next) => {
+  await sequelize.transaction(async (t) => {
+
+    try {
+      let apartament = await Apartament.findOne({ 
+        where: {
+          idApartament: req.params.id
+        },
+        transaction: t  
+      })
+  
+      let contracts = await Contract.findAll({
+        where: {
+          ID_APARTAMENT: apartament.dataValues.idApartament
+        },
+        transaction: t  
+      })
+  
+      let contractsIds = contracts.map(m => m.dataValues.idContract);
+      
+      await PlataChirie.destroy({
+        where: {
+          ID_CONTRACT: {
+            [Op.in]: contractsIds
+          }
+        },
+        transaction: t
+      })
+  
+      await Contract.destroy({
+        where: {
+          ID_APARTAMENT: apartament.dataValues.idApartament
+        },
+        transaction: t
+      })
+  
+      await Apartament.destroy({
+        where: {
+          idApartament: req.params.id
+        },
+        transaction: t
+      });
+      
+      res.json({ message: 'Record deleted' });
+
+    } catch (err) {
+      res.status(500).json({ error: err.message })
+    }
+  });
 });
 
 export { router as apartamentRouter };

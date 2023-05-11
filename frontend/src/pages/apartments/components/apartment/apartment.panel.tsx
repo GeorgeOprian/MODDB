@@ -18,11 +18,11 @@ const ApartmentPanel = ({
     const toastState = useContext(ToastContext);
 
     const [apartmentFields, setApartmentField] = useState({
-        numarCamere: null,
-        etaj: null,
-        suprafata: null,
+        numarCamere: 0,
+        etaj: 0,
+        suprafata: 0,
         centralaProprie: "",
-        pretInchiriere: null,
+        pretInchiriere: 0,
         tipConfort: "",
         adresa: null
     })
@@ -58,14 +58,14 @@ const ApartmentPanel = ({
                 pretInchiriere: editApartment.pretInchiriere,
                 suprafata: editApartment.suprafata,
                 tipConfort: editApartment.tipConfort,
-                adresa: addresses?.find(f => f.idAdresa === editApartment.ID_ADRESA)
+                adresa: addresses?.find(f => f.idAdresa === editApartment.idAdresa)
             }));
         },
         [editApartment, addresses]
     )
 
     const getFullAddress = (address: any) => {
-        return `${address["strada"]}, ${address["numar"]}, ${address["bloc"]}, ${address["scara"]}, ${address["numarApartament"]}, ${address["Localitate.nume"]}, ${address["Localitate.Judet.nume"]}`
+        return `${address.strada}, ${address.numar}, ${address.bloc}, ${address.scara}, ${address.numarApartament}, ${address.Localitate.nume}, ${address.Localitate.Judet.nume}`
     }
 
     const editApartmentAction = async () => {

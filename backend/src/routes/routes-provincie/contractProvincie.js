@@ -6,9 +6,13 @@ import { AdresaProvincie } from "../../models/models-provincie/adresaProvincie.j
 import { LocalitateProvincie } from "../../models/models-provincie/localitateProvincie.js";
 import { JudetProvincie } from "../../models/models-provincie/judetProvincie.js";
 import { ChiriasProvincie } from "../../models/models-provincie/chiriasProvincie.js";
+import { PlataChirieProvincie } from "../../models/models-provincie/plataChirieProvincie.js";
 import { AgentImobiliarProvincie } from "../../models/models-provincie/agentImobiliarProvincie.js";
+import { SequelizeService } from "../../config/db.js";
 
 const router = Router();
+
+let sequelize = SequelizeService.getModbdProvincieInstance();
 
 router.get('/', async (req, res) => {
   const params = req.query;
@@ -53,7 +57,7 @@ router.get('/', async (req, res) => {
             [Op.lt]: new Date()
           }
         },
-        include: [Chirias]
+        include: [ChiriasProvincie]
       })
   
       let clientsIds = [...new Set(clientsWithContract.map(m => m.ID_CHIRIAS))];
@@ -73,7 +77,6 @@ router.get('/', async (req, res) => {
 
   } else {
     ContractProvincie.findAll({
-      raw: true,
       include: [
         {
           model: ChiriasProvincie
@@ -109,9 +112,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  Contract.findAll({
+  ContractProvincie.findAll({
     where: { idContract: req.params.id },
-    raw: true
   })
     .then(record => {
       res.json(record)
@@ -120,18 +122,24 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  Contract.create(req.body)
-    .then((item) => {
-      const result = item.dataValues;
-      result.idContract = item.idContract;
-      res.status(201).json(result);
+  ContractProvincie.create(req.body)
+    .then(async (item) => {
+      let contract = await ContractProvincie.findOne({
+        where: {
+          ID_CHIRIAS: item.dataValues.ID_CHIRIAS,
+          ID_APARTAMENT: item.dataValues.ID_APARTAMENT,
+          ID_AGENT: item.dataValues.ID_AGENT,
+          ziuaScandenta: item.dataValues.ziuaScandenta
+        }
+      })
+      res.status(201).json(contract);
     })
     .catch(next);
 });
 
 router.put('/:id', async (req, res, next) => {
   const id = req.params.id;
-  Contract.update(
+  ContractProvincie.update(
     req.body,
     { where: { idContract: id } }
   ).then((result) => {
@@ -141,15 +149,38 @@ router.put('/:id', async (req, res, next) => {
     .catch(next);
 });
 
-router.delete('/:id', (req, res, next) => {
-  Contract.destroy({
-    where: { idContract: req.params.id },
-  })
-    .then(affectedCount => {
-      if (affectedCount) res.json({ message: 'Record deleted' });
-      else res.status(404).json({ error: 'Record not found' });
-    })
-    .catch(err => res.status(500).json({ error: err.message }));
+router.delete('/:id', async (req, res, next) => {
+  await sequelize.transaction(async (t) => {
+
+    try {
+  
+      let contract = await ContractProvincie.findOne({
+        where: {
+          idContract: req.params.id
+        },
+        transaction: t  
+      })
+      
+      await PlataChirieProvincie.destroy({
+        where: {
+          ID_CONTRACT: contract.dataValues.idContract
+        },
+        transaction: t
+      })
+  
+      await ContractProvincie.destroy({
+        where: {
+          idContract: req.params.id
+        },
+        transaction: t
+      })
+      
+      res.json({ message: 'Record deleted' });
+
+    } catch (err) {
+      res.status(500).json({ error: err.message })
+    }
+  });
 });
 
 export { router as contractProvincieRouter };

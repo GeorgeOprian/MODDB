@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 import { SequelizeService } from "../../config/db.js";
 import { LocalitateProvincie } from "./localitateProvincie.js";
 
@@ -17,9 +17,10 @@ AdresaProvincie.init(
     idAdresa: {
       type: DataTypes.NUMBER,
       primaryKey: true,
-      autoIncrement: true,
       allowNull: true,
       field: "ID_ADRESA",
+      defaultValue: Sequelize.literal('PROVINCIE_ADRESA_SEQ.NEXTVAL')
+      
     },
     // idLocalitate: {
     //   type: DataTypes.NUMBER,

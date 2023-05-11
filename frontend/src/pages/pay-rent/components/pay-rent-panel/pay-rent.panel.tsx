@@ -19,8 +19,8 @@ type PayRentFields = {
     dataEfectuarii: Date | null | Dayjs,
     suma: number | null ,
     nrZileIntarziere: number | null ,
-    ID_CONTRACT?: number | null,
-    contract: null
+    idContract?: number | null,
+    contract?: null
 }
 
 const PayRentPanel = ({
@@ -34,7 +34,7 @@ const PayRentPanel = ({
 
     const [payRentFields, setPayRentField] = useState<PayRentFields>({
        dataEfectuarii: null,
-       nrZileIntarziere: null,
+       nrZileIntarziere: 0,
        suma: 0,
        contract: null
     });
@@ -56,7 +56,7 @@ const PayRentPanel = ({
                 dataEfectuarii: dayjs(editPayRent.dataEfectuarii),
                 nrZileIntarziere: editPayRent.nrZileIntarziere,
                 suma: editPayRent.suma,
-                contract: clientContracts?.find(f => f.idContract == editPayRent.ID_CONTRACT)
+                contract: clientContracts?.find(f => f.idContract == editPayRent.idContract)
             }));
         },
         [editPayRent, clientContracts]
@@ -89,7 +89,7 @@ const PayRentPanel = ({
 
         try {
             await editPayRentDB(bodyRentPaid, (editPayRent?.idPlata as any));
-            await editContractDB({incasari: Number((payRentFields as any).contract.incasari) + Number(payRentFields.suma)}, (payRentFields.contract as any).idContract)
+            await editContractDB({incasari: Number((payRentFields as any).contract.incasari) - Number((editPayRent as any).suma) + Number(payRentFields.suma)}, (payRentFields.contract as any).idContract)
             panelState.closePanel();
             panelState.setRefreshData({
                 refreshPaidRents: true
@@ -108,14 +108,14 @@ const PayRentPanel = ({
     }
 
     const createPayRentAction = async () => {
-
+        
         const bodyRentPaid = {
             luna: new Date((payRentFields.dataEfectuarii as any)).getMonth() + 1,
             an: new Date((payRentFields.dataEfectuarii as any)).getFullYear(),
             suma: payRentFields.suma,
             dataEfectuarii: new Date((payRentFields.dataEfectuarii as any)),
             nrZileIntarziere: payRentFields.nrZileIntarziere,
-            ID_CONTRACT: (payRentFields.contract as any).idContract
+            idContract: (payRentFields.contract as any).idContract
         }
 
         try {

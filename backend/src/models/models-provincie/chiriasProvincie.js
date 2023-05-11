@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 import { SequelizeService } from "../../config/db.js";
 
 export class ChiriasProvincie extends Model {
@@ -17,9 +17,9 @@ ChiriasProvincie.init(
     idChirias: {
       type: DataTypes.NUMBER,
       primaryKey: true,
-      autoIncrement: true,
       allowNull: true,
       field: "ID_CHIRIAS",
+      defaultValue: Sequelize.literal('PROVINCIE_CHIRIAS_SEQ.NEXTVAL')
     },
     prenume: {
       type: DataTypes.STRING(20),

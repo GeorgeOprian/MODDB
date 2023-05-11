@@ -18,7 +18,7 @@ const HomePage = () => {
                     textAlign: "center"
                 }}
             >
-                Proiect Data Warehouse & Business Intelligence
+                Proiect MODBD
             </div>
             <div
                 style={{
@@ -55,8 +55,7 @@ const HomePage = () => {
                 >
                     <ul>
                         <li>Oprian Adrian George</li>
-                        <li>Pintilie Sabina</li>
-                        <li>Marian Giugioiu</li>
+                        <li>Gherta Petru</li>
                         <li>Boranescu Alexandru-Nicolae</li>
                     </ul>
                 </div>

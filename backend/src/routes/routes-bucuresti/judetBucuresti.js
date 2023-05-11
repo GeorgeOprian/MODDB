@@ -6,7 +6,6 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   JudetBucuresti.findAll({
-    raw: true
   })
     .then(records => {
       res.json(records)
@@ -17,7 +16,6 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   JudetBucuresti.findAll({
     where: { idJudet: req.params.id },
-    raw: true
   })
     .then(record => {
       res.json(record)
@@ -26,7 +24,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  Judet.create(req.body)
+  JudetBucuresti.create(req.body)
     .then((item) => {
       const result = item.dataValues;
       result.idJudet = item.idJudet;
@@ -37,7 +35,7 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
   const id = req.params.id;
-  Judet.update(
+  JudetBucuresti.update(
     req.body,
     { where: { idJudet: id } }
   ).then((result) => {
@@ -48,7 +46,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-  Judet.destroy({
+  JudetBucuresti.destroy({
     where: { idJudet: req.params.id },
   })
     .then(affectedCount => {

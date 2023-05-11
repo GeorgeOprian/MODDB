@@ -1,11 +1,13 @@
 import { Router } from "express";
 import { AgentImobiliar } from '../models/agentImobiliar.js'
+import { SequelizeService } from "../config/db.js";
 
 const router = Router();
 
+let sequelize = SequelizeService.getModbbdNationalInstance();
+
 router.get('/', async (req, res) => {
   AgentImobiliar.findAll({
-    raw: true
   })
     .then(records => {
       res.json(records)
@@ -16,7 +18,6 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   AgentImobiliar.findAll({
     where: { idAgent: req.params.id },
-    raw: true
   })
     .then(record => {
       res.json(record)
@@ -25,11 +26,16 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res, next) => {
-  AgentImobiliar.create(req.body)
-    .then((item) => {
-      const result = item.dataValues;
-      result.idAgent = item.idAgent;
-      res.status(201).json(result);
+
+  let dataAngajare = `${new Date(req.body.dataAngajare).getFullYear()}-${new Date(req.body.dataAngajare).getMonth()}-${new Date(req.body.dataAngajare).getDate()}`;
+
+  sequelize.query(`INSERT INTO OLTP_AGENT_IMOBILIAR (prenume, nume, email, telefon, data_angajare, salariu, comision) VALUES ('${req.body.prenume}', '${req.body.nume}', '${req.body.email}', '${req.body.telefon}', to_date('${dataAngajare}', 'YYYY-MM-DD'), ${req.body.salariu}, ${req.body.comision});`,
+  {
+    type: sequelize.QueryTypes.INSERT,
+    
+  })
+  .then((item) => {
+      res.status(201).json(item);
     })
     .catch(next);
 });

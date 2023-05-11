@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 import { SequelizeService } from "../config/db.js";
 
 export class AgentImobiliar extends Model {
@@ -17,9 +17,9 @@ AgentImobiliar.init(
     idAgent: {
       type: DataTypes.NUMBER,
       primaryKey: true,
-      autoIncrement: true,
       allowNull: true,
       field: "ID_AGENT",
+      defaultValue: Sequelize.literal('NATIONAL_AGENT_IMOBILIAR_SEQ.NEXTVAL')
     },
     prenume: {
       type: DataTypes.STRING(20),

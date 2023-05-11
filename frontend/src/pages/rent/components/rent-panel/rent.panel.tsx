@@ -23,12 +23,12 @@ type RentFields = {
     ziuaScandenta: number | null ,
     pretInchiriere?: number | null ,
     incasari: number | null ,
-    chirias: any,
-    apartament: any,
-    agent: any,
-    ID_CHIRIAS?: number,
-    ID_APARTAMENT?: number,
-    ID_AGENT?: number
+    chirias?: any,
+    apartament?: any,
+    agent?: any,
+    idChirias?: number,
+    idApartament?: number,
+    idAgent?: number
 }
 
 const RentPanel = ({
@@ -45,9 +45,9 @@ const RentPanel = ({
         chirias: null,
         dataFinal: null,
         dataInceput: null,
-        incasari: null,
-        pretInchiriere: null,
-        ziuaScandenta: null
+        incasari: 0,
+        pretInchiriere: 0,
+        ziuaScandenta: 0
     });
     const [apartments, setApartments] = useState<any[]>();
     const [allApartments, setAllApartments] = useState<any[]>();
@@ -67,14 +67,14 @@ const RentPanel = ({
             if(!editContract || !apartments || !agents || !clients) return;
 
             setRentField(() => ({
-                agent: agents?.find(f => f.idAgent == editContract.ID_AGENT),
-                apartament: allApartments?.find(f => f.idApartament == editContract.ID_APARTAMENT),
+                agent: agents?.find(f => f.idAgent == editContract.idAgent),
+                apartament: allApartments?.find(f => f.idApartament == editContract.idApartament),
                 dataFinal: dayjs(editContract.dataFinal as any),
                 incasari: editContract.incasari,
                 pretInchiriere: editContract.pretInchiriere,
                 ziuaScandenta: editContract.ziuaScandenta,
                 dataInceput: dayjs(editContract.dataInceput as any),
-                chirias: clients?.find(f => f.idChirias == editContract.ID_CHIRIAS)
+                chirias: clients?.find(f => f.idChirias == editContract.idChirias)
             }));
         },
         [editContract, apartments, agents, clients]
@@ -118,7 +118,7 @@ const RentPanel = ({
             ID_AGENT: rentFields.agent.idAgent,
             ID_APARTAMENT: rentFields.apartament.idApartament,
             dataFinal: dayjs(rentFields.dataFinal as any),
-            incasari: 0,
+            incasari: rentFields.incasari,
             ziuaScandenta: rentFields.ziuaScandenta,
             dataInceput: dayjs(rentFields.dataInceput as any),
             ID_CHIRIAS: rentFields.chirias.idChirias,
@@ -147,26 +147,27 @@ const RentPanel = ({
     const createAgentAction = async () => {
 
         const body = {
-            ID_AGENT: rentFields.agent.idAgent,
-            ID_APARTAMENT: rentFields.apartament.idApartament,
-            dataFinal: dayjs(rentFields.dataFinal as any),
+            idAgent: rentFields.agent.idAgent,
+            idApartament: rentFields.apartament.idApartament,
+            dataFinal: rentFields.dataFinal,
             incasari: rentFields.apartament.pretInchiriere,
+            pretInchiriere: rentFields.apartament.pretInchiriere,
             ziuaScandenta: rentFields.ziuaScandenta,
-            dataInceput: dayjs(rentFields.dataInceput as any),
-            ID_CHIRIAS: rentFields.chirias.idChirias,
+            dataInceput: rentFields.dataInceput,
+            idChirias: rentFields.chirias.idChirias,
             valoareEstimata: null
         }
 
         try {
             let contract = await  createContractDB(body);
-            
+
             const bodyRentPaid = {
                 luna: new Date().getMonth() + 1,
                 an: new Date().getFullYear(),
                 suma: rentFields.apartament.pretInchiriere,
                 dataEfectuarii: new Date(),
                 nrZileIntarziere: 0,
-                ID_CONTRACT: contract.idContract
+                idContract: contract.idContract
             }
 
             await createPayRentDB(bodyRentPaid);
@@ -189,7 +190,7 @@ const RentPanel = ({
     }
 
     const getApartmentFullAddress = (apartment: any) => {
-        return `${apartment["Adresa.strada"]}, ${apartment["Adresa.numar"]}, ${apartment["Adresa.bloc"]}, ${apartment["Adresa.scara"]}, ${apartment["Adresa.numarApartament"]}, ${apartment["Adresa.Localitate.nume"]}, ${apartment["Adresa.Localitate.Judet.nume"]}`
+        return `${apartment.Adresa.strada}, ${apartment.Adresa.numar}, ${apartment.Adresa.bloc}, ${apartment.Adresa.scara}, ${apartment.Adresa.numarApartament}, ${apartment.Adresa.Localitate.nume}, ${apartment.Adresa.Localitate.Judet.nume}`
     }
 
     const getClientName = (client: any) => {
