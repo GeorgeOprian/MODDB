@@ -18,6 +18,8 @@ import AdressesProvinciePage from './page-provincie/addresses/addresses.page';
 import ClientsProvinciePage from './page-provincie/clients/clients.page';
 import RentProvinciePage from './page-provincie/rent/rent.page';
 import PayRentProvinciePage from './page-provincie/pay-rent/pay-rent.page';
+import AgentsProvinciePage from './page-provincie/agents/agents.page';
+import AgentsBucurestiPage from './pages-bucuresti/agents/agents.page';
 
 const App = observer(() => {
 
@@ -35,6 +37,7 @@ const App = observer(() => {
         <Route path="/bucuresti">
           <Route path="apartments" element={<ApartmentsBucurestiPage />} />
           <Route path="addresses" element={<AdressesBucurestiPage />} />
+          <Route path="agents" element={<AgentsBucurestiPage />} />
           <Route path="clients" element={<ClientsBucurestiPage />} />
           <Route path="contracts" element={<RentBucurestiPage />} />
           <Route path="payrent" element={<PayRentBucurestiPage />} />
@@ -42,6 +45,7 @@ const App = observer(() => {
         <Route path="/provincie">
           <Route path="apartments" element={<ApartmentsProvinciePage />} />
           <Route path="addresses" element={<AdressesProvinciePage />} />
+          <Route path="agents" element={<AgentsProvinciePage />} />
           <Route path="clients" element={<ClientsProvinciePage />} />
           <Route path="contracts" element={<RentProvinciePage />} />
           <Route path="payrent" element={<PayRentProvinciePage />} />

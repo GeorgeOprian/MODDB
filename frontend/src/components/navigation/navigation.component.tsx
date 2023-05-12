@@ -58,6 +58,7 @@ const Navigation = observer(() => {
                         <>
                             <Link to="/bucuresti/apartments">Apartamente</Link>
                             <Link to="/bucuresti/addresses">Adrese</Link>
+                            <Link to="/bucuresti/agents">Agenti</Link>
                             <Link to="/bucuresti/clients">Clienti</Link>
                             <Link to="/bucuresti/contracts">Contracte</Link>
                             <Link to="/bucuresti/payrent">Plata Chirie</Link>
@@ -71,6 +72,7 @@ const Navigation = observer(() => {
                         <>
                             <Link to="/provincie/apartments">Apartamente</Link>
                             <Link to="/provincie/addresses">Adrese</Link>
+                            <Link to="/provincie/agents">Agenti</Link>
                             <Link to="/provincie/clients">Clienti</Link>
                             <Link to="/provincie/contracts">Contracte</Link>
                             <Link to="/provincie/payrent">Plata Chirie</Link>
