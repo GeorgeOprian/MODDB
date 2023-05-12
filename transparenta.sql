@@ -70,7 +70,7 @@ FOR EACH ROW
 BEGIN
     IF INSERTING THEN
         BEGIN
-            INSERT INTO modbd_bucuresti.chirias VALUES (:NEW.id_chirias, :NEW.prenume, :NEW.nume, :NEW.telefon, :NEW.email, :NEW.sex, :NEW.data_nastere, :NEW.starea_civila);
+            INSERT INTO modbd_bucuresti.chirias VALUES (modbd_bucuresti.BUCURESTI_CHIRIAS_SEQ.NEXTVAL, :NEW.prenume, :NEW.nume, :NEW.telefon, :NEW.email, :NEW.sex, :NEW.data_nastere, :NEW.starea_civila);
         EXCEPTION
             WHEN DUP_VAL_ON_INDEX THEN
                 NULL; -- Înregistrarea există deja, nu se face nimic
@@ -127,6 +127,9 @@ BEGIN
     end if;
 END;
 /
+
+
+--am ramas aici
 
 --trigger aparatamente
 CREATE OR REPLACE TRIGGER t_apartament
@@ -254,7 +257,6 @@ END;
 /
 
 -- triggeri plata chirie
-
 CREATE OR REPLACE TRIGGER t_plata_chirie
 INSTEAD OF INSERT OR UPDATE OR DELETE ON oltp_plata_chirie
 FOR EACH ROW

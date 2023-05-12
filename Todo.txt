@@ -9,14 +9,14 @@ Analiza:
 		- fragmetnarea orizontala
 			- (done) tabele
 			- (Petru) algoritm
-	- (maybe) 5 Verificarea corectitudinii fragmentărilor realizate
+	- (done) 5 Verificarea corectitudinii fragmentărilor realizate
 		- completitudinea
 		- reconstructia
 		- 
-	- (todo) 6 Decizia de replicare
-	- (todo) 7 scheme conceptuale baze de date local
-	- (todo) 8 constrangeri
-	- (todo) 9
+	- (done) 6 Decizia de replicare
+	- (done) 7 scheme conceptuale baze de date local
+	- (done) 8 constrangeri
+	- (todo Petru) 9
 
 Implementare:
 	- (done) 1

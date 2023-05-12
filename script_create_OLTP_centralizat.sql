@@ -88,6 +88,9 @@ alter table OLTP_ADRESA
   add constraint OLTP_ADR_STRADA_NN
   check ("STRADA" IS NOT NULL);
 
+alter table OLTP_ADRESA
+  add constraint OLTP_ADR_UNIQUE UNIQUE (STRADA, NUMAR, BLOC, SCARA, NUMAR_APARTAMENT);
+
 
 create table OLTP_AGENT_IMOBILIAR
 (

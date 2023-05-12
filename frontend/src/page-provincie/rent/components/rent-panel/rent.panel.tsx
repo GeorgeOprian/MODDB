@@ -147,14 +147,14 @@ const RentPanel = ({
     const createAgentAction = async () => {
 
         const body = {
-            idAgent: rentFields.agent.idAgent,
-            idApartament: rentFields.apartament.idApartament,
+            ID_AGENT: rentFields.agent.idAgent,
+            ID_APARTAMENT: rentFields.apartament.idApartament,
             dataFinal: rentFields.dataFinal,
             incasari: rentFields.apartament.pretInchiriere,
             pretInchiriere: rentFields.apartament.pretInchiriere,
             ziuaScandenta: rentFields.ziuaScandenta,
             dataInceput: rentFields.dataInceput,
-            idChirias: rentFields.chirias.idChirias,
+            ID_CHIRIAS: rentFields.chirias.idChirias,
             valoareEstimata: null
         }
 
@@ -167,7 +167,7 @@ const RentPanel = ({
                 suma: rentFields.apartament.pretInchiriere,
                 dataEfectuarii: new Date(),
                 nrZileIntarziere: 0,
-                idContract: contract.idContract
+                ID_CONTRACT: contract.idContract
             }
 
             await createPayRentDB(bodyRentPaid);
