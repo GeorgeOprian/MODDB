@@ -120,7 +120,6 @@ const AddressPanel = ({
             numarApartament: parseInt((addressFields.numarApartament as any).toString()),
             ID_LOCALITATE: addressFields.localitate?.idLocalitate,
         }
-        console.log(body)
 
         try {
             await  createAddressDB(body);
@@ -133,10 +132,10 @@ const AddressPanel = ({
                 message: "Actiune realizata cu succes"
             })
             
-        } catch (error) {
+        } catch (error: any) {
             toastState.setToast({
                 open: true,
-                message: "Eroare"
+                message: `${error.response.data.message}`
             })
         }
     }
